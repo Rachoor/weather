@@ -1,0 +1,55 @@
+<html>
+<head>
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+</head>
+
+<body>
+  
+  <div id = "dis">
+    <table>
+        <tr><td id = "place">McLean, VA</td></tr>
+        <tr>
+            <td id = "f"></td>
+            <td>
+              <table>
+                <tr id = "img"></tr>
+                <tr id = "cond"></tr>
+              </table>
+            </td>
+        </tr>
+    </table>
+    <table>
+        <tr id = "day"></tr>
+        <tr id = "hilo"></tr>
+    </table>
+  </div>
+
+
+  <script>
+
+    function callbackFunction(data) 
+    {
+      var now = data.query.results.channel.item.condition;
+      //Get the current temperature
+      $("#f").append(now.temp+ "\u00B0");
+      //Weather Conditions
+      $("#img").append("<img src = 'http://l.yimg.com/a/i/us/we/52/"+ now.code+".gif'>");
+      $("#cond").append(now.text);
+        //loop to get 5 Days Forecast
+        for(var i=0;i<5;i++)
+        {
+            var forecast = data.query.results.channel.item.forecast[i];
+            $("#day").append("<td class='vertical'>" + forecast.day + "</td>" );
+            $("#hilo").append("<td class='vertical'>" + forecast.high + "\u00B0/" + forecast.low + "\u00B0"+ "</td>" ); 
+        }
+    };
+
+  </script>
+        <!--Using the yahoo api--> 
+  <script src="https://query.yahooapis.com/v1/public/yql?q=select * from weather.forecast where woeid in (select woeid from geo.places(1) where text='McLean, VA') and u='f' &format=json &callback=callbackFunction">
+  </script>
+  
+  </body>
+
+  </html>
